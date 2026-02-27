@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>คำนวณการเงิน - ผ่อนบ้าน ผ่อนรถ ดอกเบี้ย | FinCalc TH</title>
+  <meta name="description" content="เครื่องคำนวณการเงินออนไลน์ฟรี คำนวณผ่อนบ้าน ผ่อนรถ ดอกเบี้ยเงินฝาก ง่าย แม่นยำ ใช้งานได้ทันที" />
+  <meta name="keywords" content="คำนวณผ่อนบ้าน, คำนวณผ่อนรถ, คำนวณดอกเบี้ย, เครื่องคิดเลขการเงิน, สินเชื่อ" />
+  <meta property="og:title" content="คำนวณการเงิน - ผ่อนบ้าน ผ่อนรถ ดอกเบี้ย" />
+  <meta property="og:description" content="เครื่องคำนวณการเงินออนไลน์ฟรี ใช้งานง่าย แม่นยำ" />
+  <meta property="og:type" content="website" />
+
+  <!-- Google AdSense: แทนที่ ca-pub-XXXXXXXXXXXXXXXX ด้วย Publisher ID ของคุณ -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #f0f4f8;
+      color: #2d3748;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a365d, #2b6cb0);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 4px; }
+    header p { font-size: 0.95rem; opacity: 0.85; }
+
+    nav {
+      background: #2b6cb0;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.5);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    nav button:hover, nav button.active {
+      background: white;
+      color: #2b6cb0;
+      border-color: white;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* AdSense Banner placeholder */
+    .ad-banner {
+      background: #e2e8f0;
+      border: 2px dashed #a0aec0;
+      border-radius: 8px;
+      text-align: center;
+      padding: 16px;
+      margin-bottom: 24px;
+      color: #718096;
+      font-size: 0.85rem;
+    }
+
+    .calculator-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 28px;
+      margin-bottom: 24px;
+      display: none;
+    }
+
+    .calculator-card.visible { display: block; }
+
+    .calculator-card h2 {
+      font-size: 1.3rem;
+      color: #1a365d;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #bee3f8;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      color: #4a5568;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    input[type="number"], select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input[type="number"]:focus, select:focus {
+      border-color: #2b6cb0;
+    }
+
+    .input-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 480px) {
+      .input-group { grid-template-columns: 1fr; }
+    }
+
+    .btn-calc {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #2b6cb0, #1a365d);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-calc:hover { opacity: 0.9; }
+
+    .result-box {
+      background: linear-gradient(135deg, #ebf8ff, #bee3f8);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .result-box.visible { display: block; }
+
+    .result-box h3 {
+      font-size: 1rem;
+      color: #2c5282;
+      margin-bottom: 14px;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #bee3f8;
+      font-size: 0.95rem;
+    }
+
+    .result-item:last-child { border-bottom: none; }
+
+    .result-value {
+      font-weight: 700;
+      color: #1a365d;
+    }
+
+    .highlight {
+      background: #2b6cb0;
+      color: white;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.05rem;
+    }
+
+    .highlight span:last-child {
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    /* AdSense In-article placeholder */
+    .ad-inline {
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      text-align: center;
+      padding: 12px;
+      margin: 20px 0;
+      color: #a0aec0;
+      font-size: 0.8rem;
+    }
+
+    .tips {
+      background: #f0fff4;
+      border-left: 4px solid #48bb78;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 16px;
+      margin-top: 20px;
+      font-size: 0.88rem;
+      color: #276749;
+    }
+
+    .tips strong { display: block; margin-bottom: 6px; }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #718096;
+      font-size: 0.85rem;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🧮 คำนวณการเงิน</h1>
+  <p>เครื่องคิดเลขทางการเงินออนไลน์ ฟรี ไม่ต้องสมัครสมาชิก</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showCalc('home', this)">🏠 ผ่อนบ้าน</button>
+  <button onclick="showCalc('car', this)">🚗 ผ่อนรถ</button>
+  <button onclick="showCalc('savings', this)">💰 ดอกเบี้ยเงินฝาก</button>
+  <button onclick="showCalc('invest', this)">📈 เป้าหมายการออม</button>
+</nav>
+
+<div class="container">
+
+  <!-- AdSense Banner -->
+  <div class="ad-banner">
+    📢 พื้นที่โฆษณา Google AdSense (728×90)
+    <!-- แทนที่ด้วยโค้ด AdSense จริงหลังได้รับอนุมัติ -->
+  </div>
+
+  <!-- คำนวณผ่อนบ้าน -->
+  <div id="calc-home" class="calculator-card visible">
+    <h2>🏠 คำนวณผ่อนบ้าน / สินเชื่อที่อยู่อาศัย</h2>
+
+    <div class="form-group">
+      <label>ราคาบ้าน / วงเงินกู้ (บาท)</label>
+      <input type="number" id="home-loan" placeholder="เช่น 3000000" min="0" />
+    </div>
+
+    <div class="input-group">
+      <div class="form-group">
+        <label>อัตราดอกเบี้ย (% ต่อปี)</label>
+        <input type="number" id="home-rate" placeholder="เช่น 6.5" step="0.01" min="0" />
+      </div>
+      <div class="form-group">
+        <label>ระยะเวลากู้ (ปี)</label>
+        <input type="number" id="home-years" placeholder="เช่น 30" min="1" max="40" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>เงินดาวน์ (บาท) <span style="font-weight:400; color:#718096">(ถ้ามี)</span></label>
+      <input type="number" id="home-down" placeholder="0" min="0" />
+    </div>
+
+    <button class="btn-calc" onclick="calcHome()">คำนวณ</button>
+
+    <div id="home-result" class="result-box">
+      <h3>📊 ผลการคำนวณ</h3>
+      <div class="result-item">
+        <span>วงเงินกู้จริง</span>
+        <span class="result-value" id="h-principal"></span>
+      </div>
+      <div class="result-item">
+        <span>ยอดผ่อนรวมทั้งหมด</span>
+        <span class="result-value" id="h-total"></span>
+      </div>
+      <div class="result-item">
+        <span>ดอกเบี้ยรวมตลอดสัญญา</span>
+        <span class="result-value" id="h-interest"></span>
+      </div>
+      <div class="highlight">
+        <span>ผ่อนต่อเดือน</span>
+        <span id="h-monthly"></span>
+      </div>
+    </div>
+
+    <div class="tips">
+      <strong>💡 เคล็ดลับ</strong>
+      ยิ่งดาวน์มากยิ่งผ่อนน้อยลง — การดาวน์ 20% ขึ้นไปช่วยลดดอกเบี้ยได้มาก และบางธนาคารให้อัตราดีกว่าด้วย
+    </div>
+  </div>
+
+  <!-- คำนวณผ่อนรถ -->
+  <div id="calc-car" class="calculator-card">
+    <h2>🚗 คำนวณผ่อนรถ / สินเชื่อยานพาหนะ</h2>
+
+    <div class="form-group">
+      <label>ราคารถ (บาท)</label>
+      <input type="number" id="car-price" placeholder="เช่น 700000" min="0" />
+    </div>
+
+    <div class="input-group">
+      <div class="form-group">
+        <label>เงินดาวน์ (บาท)</label>
+        <input type="number" id="car-down" placeholder="เช่น 70000" min="0" />
+      </div>
+      <div class="form-group">
+        <label>อัตราดอกเบี้ย (% ต่อปี)</label>
+        <input type="number" id="car-rate" placeholder="เช่น 2.79" step="0.01" min="0" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>ระยะเวลาผ่อน</label>
+      <select id="car-months">
+        <option value="24">24 เดือน (2 ปี)</option>
+        <option value="36">36 เดือน (3 ปี)</option>
+        <option value="48" selected>48 เดือน (4 ปี)</option>
+        <option value="60">60 เดือน (5 ปี)</option>
+        <option value="72">72 เดือน (6 ปี)</option>
+        <option value="84">84 เดือน (7 ปี)</option>
+      </select>
+    </div>
+
+    <button class="btn-calc" onclick="calcCar()">คำนวณ</button>
+
+    <div id="car-result" class="result-box">
+      <h3>📊 ผลการคำนวณ</h3>
+      <div class="result-item">
+        <span>ยอดจัดไฟแนนซ์</span>
+        <span class="result-value" id="c-principal"></span>
+      </div>
+      <div class="result-item">
+        <span>ดอกเบี้ยรวม</span>
+        <span class="result-value" id="c-interest"></span>
+      </div>
+      <div class="result-item">
+        <span>ยอดชำระรวม</span>
+        <span class="result-value" id="c-total"></span>
+      </div>
+      <div class="highlight">
+        <span>ผ่อนต่อเดือน</span>
+        <span id="c-monthly"></span>
+      </div>
+    </div>
+
+    <div class="tips">
+      <strong>💡 เคล็ดลับ</strong>
+      สินเชื่อรถมักคิดดอกเบี้ยแบบ Flat Rate — ดอกเบี้ยจริง (EIR) จะสูงกว่าที่โฆษณาประมาณ 1.8–2 เท่า
+    </div>
+  </div>
+
+  <!-- AdSense In-article -->
+  <div class="ad-inline" id="ad-inline">
+    📢 พื้นที่โฆษณา In-article (336×280)
+    <!-- แทนที่ด้วยโค้ด AdSense จริง -->
+  </div>
+
+  <!-- คำนวณดอกเบี้ยเงินฝาก -->
+  <div id="calc-savings" class="calculator-card">
+    <h2>💰 คำนวณดอกเบี้ยเงินฝาก</h2>
+
+    <div class="input-group">
+      <div class="form-group">
+        <label>เงินต้น (บาท)</label>
+        <input type="number" id="sav-principal" placeholder="เช่น 100000" min="0" />
+      </div>
+      <div class="form-group">
+        <label>อัตราดอกเบี้ย (% ต่อปี)</label>
+        <input type="number" id="sav-rate" placeholder="เช่น 1.5" step="0.01" min="0" />
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="form-group">
+        <label>ระยะเวลา (ปี)</label>
+        <input type="number" id="sav-years" placeholder="เช่น 5" min="1" />
+      </div>
+      <div class="form-group">
+        <label>ประเภทดอกเบี้ย</label>
+        <select id="sav-type">
+          <option value="simple">ดอกเบี้ยธรรมดา (Simple)</option>
+          <option value="compound">ดอกเบี้ยทบต้น (Compound)</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calcSavings()">คำนวณ</button>
+
+    <div id="sav-result" class="result-box">
+      <h3>📊 ผลการคำนวณ</h3>
+      <div class="result-item">
+        <span>เงินต้น</span>
+        <span class="result-value" id="s-principal"></span>
+      </div>
+      <div class="result-item">
+        <span>ดอกเบี้ยที่ได้รับ</span>
+        <span class="result-value" id="s-interest"></span>
+      </div>
+      <div class="highlight">
+        <span>เงินรวมทั้งหมด</span>
+        <span id="s-total"></span>
+      </div>
+    </div>
+
+    <div class="tips">
+      <strong>💡 เคล็ดลับ</strong>
+      เงินฝากประจำ 12 เดือนมักให้ดอกเบี้ยสูงกว่าออมทรัพย์ 3–5 เท่า ลองเปรียบเทียบอัตราดอกเบี้ยของแต่ละธนาคารก่อนฝาก
+    </div>
+  </div>
+
+  <!-- เป้าหมายการออม -->
+  <div id="calc-invest" class="calculator-card">
+    <h2>📈 คำนวณเป้าหมายการออม</h2>
+
+    <div class="form-group">
+      <label>เป้าหมายเงินที่ต้องการ (บาท)</label>
+      <input type="number" id="inv-goal" placeholder="เช่น 1000000" min="0" />
+    </div>
+
+    <div class="input-group">
+      <div class="form-group">
+        <label>เงินออมปัจจุบัน (บาท)</label>
+        <input type="number" id="inv-current" placeholder="เช่น 50000" min="0" />
+      </div>
+      <div class="form-group">
+        <label>ผลตอบแทนที่คาดหวัง (% ต่อปี)</label>
+        <input type="number" id="inv-rate" placeholder="เช่น 7" step="0.1" min="0" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>ระยะเวลา (ปี)</label>
+      <input type="number" id="inv-years" placeholder="เช่น 10" min="1" />
+    </div>
+
+    <button class="btn-calc" onclick="calcInvest()">คำนวณ</button>
+
+    <div id="inv-result" class="result-box">
+      <h3>📊 ผลการคำนวณ</h3>
+      <div class="result-item">
+        <span>เป้าหมาย</span>
+        <span class="result-value" id="i-goal"></span>
+      </div>
+      <div class="result-item">
+        <span>ต้องออมต่อปี</span>
+        <span class="result-value" id="i-yearly"></span>
+      </div>
+      <div class="highlight">
+        <span>ต้องออมต่อเดือน</span>
+        <span id="i-monthly"></span>
+      </div>
+    </div>
+
+    <div class="tips">
+      <strong>💡 เคล็ดลับ</strong>
+      กองทุนรวม RMF/SSF นอกจากช่วยออมระยะยาวแล้ว ยังลดหย่อนภาษีได้ด้วย เหมาะสำหรับคนที่มีรายได้เสียภาษี
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2025 FinCalc TH — เครื่องคำนวณการเงินออนไลน์ | ข้อมูลเพื่อการศึกษาเท่านั้น</p>
+  <p style="margin-top:4px">ควรปรึกษาผู้เชี่ยวชาญด้านการเงินก่อนตัดสินใจ</p>
+</footer>
+
+<script>
+  function showCalc(name, btn) {
+    document.querySelectorAll('.calculator-card').forEach(el => el.classList.remove('visible'));
+    document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+    document.getElementById('calc-' + name).classList.add('visible');
+    btn.classList.add('active');
+  }
+
+  function fmt(n) {
+    return n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' บาท';
+  }
+
+  function calcPMT(principal, annualRate, months) {
+    if (annualRate === 0) return principal / months;
+    const r = annualRate / 100 / 12;
+    return principal * r * Math.pow(1 + r, months) / (Math.pow(1 + r, months) - 1);
+  }
+
+  // ผ่อนบ้าน
+  function calcHome() {
+    const loan = parseFloat(document.getElementById('home-loan').value) || 0;
+    const rate = parseFloat(document.getElementById('home-rate').value) || 0;
+    const years = parseInt(document.getElementById('home-years').value) || 0;
+    const down = parseFloat(document.getElementById('home-down').value) || 0;
+
+    if (!loan || !rate || !years) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+
+    const principal = loan - down;
+    const months = years * 12;
+    const monthly = calcPMT(principal, rate, months);
+    const total = monthly * months;
+    const interest = total - principal;
+
+    document.getElementById('h-principal').textContent = fmt(principal);
+    document.getElementById('h-total').textContent = fmt(total);
+    document.getElementById('h-interest').textContent = fmt(interest);
+    document.getElementById('h-monthly').textContent = fmt(monthly);
+    document.getElementById('home-result').classList.add('visible');
+  }
+
+  // ผ่อนรถ (Flat Rate)
+  function calcCar() {
+    const price = parseFloat(document.getElementById('car-price').value) || 0;
+    const down = parseFloat(document.getElementById('car-down').value) || 0;
+    const rate = parseFloat(document.getElementById('car-rate').value) || 0;
+    const months = parseInt(document.getElementById('car-months').value) || 0;
+
+    if (!price || !months) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+
+    const principal = price - down;
+    const interest = principal * (rate / 100) * (months / 12);
+    const total = principal + interest;
+    const monthly = total / months;
+
+    document.getElementById('c-principal').textContent = fmt(principal);
+    document.getElementById('c-interest').textContent = fmt(interest);
+    document.getElementById('c-total').textContent = fmt(total);
+    document.getElementById('c-monthly').textContent = fmt(monthly);
+    document.getElementById('car-result').classList.add('visible');
+  }
+
+  // ดอกเบี้ยเงินฝาก
+  function calcSavings() {
+    const principal = parseFloat(document.getElementById('sav-principal').value) || 0;
+    const rate = parseFloat(document.getElementById('sav-rate').value) || 0;
+    const years = parseFloat(document.getElementById('sav-years').value) || 0;
+    const type = document.getElementById('sav-type').value;
+
+    if (!principal || !rate || !years) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+
+    let total, interest;
+    if (type === 'compound') {
+      total = principal * Math.pow(1 + rate / 100, years);
+    } else {
+      total = principal + principal * (rate / 100) * years;
+    }
+    interest = total - principal;
+
+    document.getElementById('s-principal').textContent = fmt(principal);
+    document.getElementById('s-interest').textContent = fmt(interest);
+    document.getElementById('s-total').textContent = fmt(total);
+    document.getElementById('sav-result').classList.add('visible');
+  }
+
+  // เป้าหมายการออม
+  function calcInvest() {
+    const goal = parseFloat(document.getElementById('inv-goal').value) || 0;
+    const current = parseFloat(document.getElementById('inv-current').value) || 0;
+    const rate = parseFloat(document.getElementById('inv-rate').value) || 0;
+    const years = parseInt(document.getElementById('inv-years').value) || 0;
+
+    if (!goal || !rate || !years) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+
+    const r = rate / 100;
+    const fvCurrent = current * Math.pow(1 + r, years);
+    const remaining = goal - fvCurrent;
+
+    let yearlyNeeded;
+    if (remaining <= 0) {
+      yearlyNeeded = 0;
+    } else {
+      yearlyNeeded = remaining * r / (Math.pow(1 + r, years) - 1);
+    }
+
+    document.getElementById('i-goal').textContent = fmt(goal);
+    document.getElementById('i-yearly').textContent = fmt(yearlyNeeded);
+    document.getElementById('i-monthly').textContent = fmt(yearlyNeeded / 12);
+    document.getElementById('inv-result').classList.add('visible');
+  }
+</script>
+
+</body>
+</html>
